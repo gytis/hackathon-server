@@ -3,3 +3,6 @@ insert into User (id, name, facebook_id, photo, registered) values (1, 'Madhumit
 
 insert into Ticket (id, user_id, event_id, date, created_at) values(0, 0, 0, '12569537329', '12569537329')
 insert into Ticket (id, user_id, event_id, date, created_at) values(1, 1, 1, '12569537329', '12569537329')
+
+insert into Rating (id, user_id, event_id, value, created_at) values(0, 0, 0, '4', '12569537329')
+insert into Rating (id, user_id, event_id, value, created_at) values(1, 1, 1, '5', '12569537329')
