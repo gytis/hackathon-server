@@ -47,7 +47,7 @@ public class RatingResource {
     private JsonObject ratingToJson(final Rating rating) {
         return Json.createObjectBuilder()
                 .add("id", rating.getId())
-                .add("user_id", rating.getUserId())
+                .add("user_id", rating.getUser().getId())
                 .add("event_id", rating.getEventId())
                 .add("value", rating.getValue())
                 .add("created_at", rating.getCreatedAt().toString())

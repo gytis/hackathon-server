@@ -49,7 +49,7 @@ public class TicketResource {
     private JsonObject ticketToJson(final Ticket ticket) {
         return Json.createObjectBuilder()
                 .add("id", ticket.getId())
-                .add("user_id", ticket.getUserId())
+                .add("user_id", ticket.getUser().getId())
                 .add("event_id", ticket.getEventId())
                 .add("date", ticket.getDate().toString())
                 .add("created_at", ticket.getCreatedAt().toString())
