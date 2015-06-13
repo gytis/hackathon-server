@@ -11,6 +11,8 @@ import javax.json.JsonObject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -32,6 +34,20 @@ public class UserResource {
     @POST
     public void post() {
 
+    }
+
+    @GET
+    @Path("/{userId}/friends")
+    public Response getFriends(@PathParam("userId") Long userId) {
+        final User user = userRepository.get(userId);
+
+        if (user == null) {
+            return Response.status(404).build();
+        }
+
+        final List<User> friends = user.getFriends();
+
+        return Response.status(200).entity(usersToJson(friends).toString()).build();
     }
 
     private JsonArray usersToJson(final List<User> users) {

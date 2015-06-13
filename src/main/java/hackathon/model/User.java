@@ -2,10 +2,15 @@ package hackathon.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author <a href="mailto:gytis@redhat.com">Gytis Trikleris</a>
@@ -29,6 +34,11 @@ public class User implements Serializable {
     private String photo;
 
     private boolean registered;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "Frienship", joinColumns = {@JoinColumn(name = "user1", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "user2", referencedColumnName = "id")})
+    private List<User> friends;
 
     public Long getId() {
         return id;
@@ -68,5 +78,13 @@ public class User implements Serializable {
 
     public void setRegistered(boolean registered) {
         this.registered = registered;
+    }
+
+    public List<User> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<User> friends) {
+        this.friends = friends;
     }
 }

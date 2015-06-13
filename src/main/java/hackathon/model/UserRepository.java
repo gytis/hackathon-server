@@ -13,6 +13,10 @@ public class UserRepository {
     @Inject
     private EntityManager entityManager;
 
+    public User get(final Long id) {
+        return entityManager.find(User.class, id);
+    }
+
     public List<User> getAll() {
         final TypedQuery<User> query = entityManager.createNamedQuery(User.FIND_ALL, User.class);
         return query.getResultList();
