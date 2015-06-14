@@ -76,6 +76,8 @@ public class TicketResource {
         final Ticket ticket = new Ticket();
         final Long userId = Long.valueOf(jsonObject.getInt("user_id"));
 
+        System.out.println("Saving user: " + json + ", " + userId);
+
         ticket.setUser(userRepository.get(userId));
         ticket.setDate(Long.valueOf(jsonObject.getInt("date")));
         ticket.setEventId(Long.valueOf(jsonObject.getInt("event_id")));
