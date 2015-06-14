@@ -65,7 +65,7 @@ public class TicketResource {
         if (ticket.getUser() == null) {
             builder.add("user_id", "");
         } else {
-            builder.add("user_id", ticket.getUser().getId())
+            builder.add("user_id", ticket.getUser().getId());
         }
 
         return builder.build();
