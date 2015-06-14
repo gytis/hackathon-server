@@ -8,12 +8,14 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,10 +44,17 @@ public class UserResource {
 
     @POST
     public void addUser(String body) {
-        // TODO Check for the same fb id
-        final User user = jsonToUser(body);
+        User user = jsonToUser(body);
 
-        userRepository.save(user);
+        try {
+            user = userRepository.getByFacebookId(user.getFacebookId());
+            if (!user.getRegistered()) {
+                user.setRegistered(true);
+                userRepository.save(user);
+            }
+        } catch (final NoResultException e) {
+            userRepository.save(user);
+        }
     }
 
     @GET
@@ -64,8 +73,16 @@ public class UserResource {
 
     @POST
     @Path("/{userId}/friends")
-    public void addFriend() {
+    public void addFriends(final String body) {
+        final List<User> users = fbJsonToUsers(body);
 
+        for (final User user : users) {
+            try {
+                userRepository.getByFacebookId(user.getFacebookId());
+            } catch (final NoResultException e) {
+                userRepository.save(user);
+            }
+        }
     }
 
     private JsonArray usersToJson(final List<User> users) {
@@ -98,5 +115,24 @@ public class UserResource {
         user.setRegistered(jsonObject.getBoolean("registered"));
 
         return user;
+    }
+
+    private List<User> fbJsonToUsers(final String json) {
+        final List<User> users = new ArrayList<>();
+        JsonArray jsonArray = Json.createReader(new StringReader(json)).readArray();
+
+        for (int i = 0; i < jsonArray.size(); i++) {
+            final JsonObject jsonObject = jsonArray.getJsonObject(i);
+            final User user = new User();
+            System.out.println(jsonObject.getString("id"));
+            user.setName(jsonObject.getString("name"));
+            user.setFacebookId(jsonObject.getString("id"));
+            user.setPhoto("https://graph.facebook.com/" + user.getFacebookId() + "/picture");
+            user.setRegistered(false);
+
+            users.add(user);
+        }
+
+        return users;
     }
 }

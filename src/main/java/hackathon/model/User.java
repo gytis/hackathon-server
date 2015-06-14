@@ -29,7 +29,7 @@ public class User implements Serializable {
     public static final String FIND_BY_FB_ID = "User.findByFbId";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     private String name;

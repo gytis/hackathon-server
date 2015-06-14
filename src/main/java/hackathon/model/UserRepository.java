@@ -31,7 +31,11 @@ public class UserRepository {
 
     @Transactional
     public void save(final User user) {
-        entityManager.persist(user);
+        if (user.getId() == null) {
+            entityManager.persist(user);
+        } else {
+            entityManager.merge(user);
+        }
     }
 
 }

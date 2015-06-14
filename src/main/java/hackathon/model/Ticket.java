@@ -22,7 +22,7 @@ public class Ticket {
     public static final String FIND_ALL = "Ticket.findAll";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @ManyToOne

@@ -19,7 +19,7 @@ public class Rating {
     public static final String FIND_ALL = "Rating.findAll";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @ManyToOne
