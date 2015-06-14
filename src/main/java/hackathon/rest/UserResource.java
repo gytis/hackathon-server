@@ -65,15 +65,8 @@ public class UserResource {
     @GET
     @Path("/{userId}/friends")
     public Response getFriends(@PathParam("userId") Long userId) {
-        final User user;
-
-        try {
-            user = userRepository.get(userId);
-        } catch (NoResultException e) {
-            return Response.status(404).build();
-        }
-
-        final List<User> friends = user.getFriends();
+        // TODO add proper filter
+        final List<User> friends = userRepository.getAll();
 
         return Response.status(200).entity(usersToJson(friends).toString()).build();
     }
