@@ -70,7 +70,7 @@ public class TicketResource {
         final Long userId = Long.valueOf(jsonObject.getInt("user_id"));
 
         ticket.setUser(userRepository.get(userId));
-        ticket.setDate(Long.valueOf(jsonObject.getString("date")));
+        ticket.setDate(Long.valueOf(jsonObject.getInt("date")));
         ticket.setEventId(Long.valueOf(jsonObject.getInt("event_id")));
 
         return ticket;
