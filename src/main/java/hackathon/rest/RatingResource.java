@@ -40,13 +40,17 @@ public class RatingResource {
         Rating rating = jsonToRating(body);
         int newValue = rating.getValue();
 
-        try {
-            rating = ratingRepository.getByOwners(rating.getUser().getId(), rating.getEventId());
-            rating.setValue(newValue);
-        } catch (NoResultException e) {
-        }
+        if (rating.getUser() == null) {
+            ratingRepository.save(rating);
+        } else {
+            try {
+                rating = ratingRepository.getByOwners(rating.getUser().getId(), rating.getEventId());
+                rating.setValue(newValue);
+            } catch (NoResultException e) {
+            }
 
-        ratingRepository.save(rating);
+            ratingRepository.save(rating);
+        }
 
         return ratingToJson(rating).toString();
     }
