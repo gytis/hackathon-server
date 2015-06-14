@@ -36,10 +36,13 @@ public class UserResource {
 
     @GET
     @Path("/fb/{facebookId}")
-    public String getUserByFacebookId(@PathParam("facebookId") String facebookId) {
-        final User user = userRepository.getByFacebookId(facebookId);
-
-        return userToJson(user).toString();
+    public Response getUserByFacebookId(@PathParam("facebookId") String facebookId) {
+        try {
+            final User user = userRepository.getByFacebookId(facebookId);
+            return Response.status(200).entity(userToJson(user).toString()).build();
+        } catch (NoResultException e) {
+            return Response.status(404).build();
+        }
     }
 
     @POST
@@ -62,9 +65,11 @@ public class UserResource {
     @GET
     @Path("/{userId}/friends")
     public Response getFriends(@PathParam("userId") Long userId) {
-        final User user = userRepository.get(userId);
+        final User user;
 
-        if (user == null) {
+        try {
+            user = userRepository.get(userId);
+        } catch (NoResultException e) {
             return Response.status(404).build();
         }
 
