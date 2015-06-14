@@ -80,16 +80,33 @@ public class UserResource {
 
     @POST
     @Path("/{userId}/friends")
-    public void addFriends(final String body) {
+    public Response addFriends(@PathParam("userId") Long userId, final String body) {
+        final User currentUser;
+
+        try {
+            currentUser = userRepository.get(userId);
+        } catch (NoResultException e) {
+            return Response.status(404).build();
+        }
+
         final List<User> users = fbJsonToUsers(body);
 
-        for (final User user : users) {
+        for (User user : users) {
             try {
-                userRepository.getByFacebookId(user.getFacebookId());
+                user = userRepository.getByFacebookId(user.getFacebookId());
             } catch (final NoResultException e) {
                 userRepository.save(user);
             }
+
+            currentUser.getFriends().add(user);
+            user.getFriends().add(currentUser);
+
+            userRepository.save(user);
         }
+
+        userRepository.save(currentUser);
+
+        return Response.status(204).build();
     }
 
     private JsonArray usersToJson(final List<User> users) {
