@@ -10,6 +10,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -55,13 +56,19 @@ public class TicketResource {
     }
 
     private JsonObject ticketToJson(final Ticket ticket) {
-        return Json.createObjectBuilder()
+        final JsonObjectBuilder builder = Json.createObjectBuilder()
                 .add("id", ticket.getId())
-                .add("user_id", ticket.getUser().getId())
                 .add("event_id", ticket.getEventId())
                 .add("date", ticket.getDate().toString())
-                .add("created_at", ticket.getCreatedAt().toString())
-                .build();
+                .add("created_at", ticket.getCreatedAt().toString());
+
+        if (ticket.getUser() == null) {
+            builder.add("user_id", "");
+        } else {
+            builder.add("user_id", ticket.getUser().getId())
+        }
+
+        return builder.build();
     }
 
     private Ticket jsonToTicket(final String json) {
