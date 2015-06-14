@@ -13,6 +13,7 @@ import javax.json.JsonObject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import java.io.StringReader;
 import java.util.List;
 
 /**
@@ -24,6 +25,9 @@ public class TicketResource {
     @Inject
     private TicketRepository ticketRepository;
 
+    @Inject
+    private UserRepository userRepository;
+
     @GET
     public String getAll() {
         final List<Ticket> tickets = ticketRepository.getAll();
@@ -32,8 +36,12 @@ public class TicketResource {
     }
 
     @POST
-    public void post() {
+    public String post(String body) {
+        final Ticket ticket = jsonToTicket(body);
 
+        ticketRepository.save(ticket);
+
+        return ticketToJson(ticket).toString();
     }
 
     private JsonArray ticketsToJson(final List<Ticket> tickets) {
@@ -54,5 +62,17 @@ public class TicketResource {
                 .add("date", ticket.getDate().toString())
                 .add("created_at", ticket.getCreatedAt().toString())
                 .build();
+    }
+
+    private Ticket jsonToTicket(final String json) {
+        final JsonObject jsonObject = Json.createReader(new StringReader(json)).readObject();
+        final Ticket ticket = new Ticket();
+        final Long userId = Long.valueOf(jsonObject.getInt("user_id"));
+
+        ticket.setUser(userRepository.get(userId));
+        ticket.setDate(Long.valueOf(jsonObject.getString("date")));
+        ticket.setEventId(Long.valueOf(jsonObject.getInt("event_id")));
+
+        return ticket;
     }
 }

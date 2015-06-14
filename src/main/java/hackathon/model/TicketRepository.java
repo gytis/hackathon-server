@@ -3,6 +3,7 @@ package hackathon.model;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -16,6 +17,15 @@ public class TicketRepository {
     public List<Ticket> getAll() {
         final TypedQuery<Ticket> query = entityManager.createNamedQuery(Ticket.FIND_ALL, Ticket.class);
         return query.getResultList();
+    }
+
+    @Transactional
+    public void save(final Ticket ticket) {
+        if (ticket.getId() == null) {
+            entityManager.persist(ticket);
+        } else {
+            entityManager.merge(ticket);
+        }
     }
 
 }
