@@ -8,6 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import java.util.Date;
 
 /**
  * @author <a href="mailto:gytis@redhat.com">Gytis Trikleris</a>
@@ -33,6 +36,16 @@ public class Rating {
 
     @Column(name = "created_at")
     private Long createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date().getTime();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        createdAt = new Date().getTime();
+    }
 
     public Long getId() {
         return id;

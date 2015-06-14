@@ -2,6 +2,7 @@ package hackathon.rest;
 
 import hackathon.model.Rating;
 import hackathon.model.RatingRepository;
+import hackathon.model.UserRepository;
 
 import javax.inject.Inject;
 import javax.json.Json;
@@ -11,6 +12,7 @@ import javax.json.JsonObject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import java.io.StringReader;
 import java.util.List;
 
 /**
@@ -22,6 +24,9 @@ public class RatingResource {
     @Inject
     private RatingRepository ratingRepository;
 
+    @Inject
+    private UserRepository userRepository;
+
     @GET
     public String getAll() {
         final List<Rating> ratings = ratingRepository.getAll();
@@ -30,8 +35,12 @@ public class RatingResource {
     }
 
     @POST
-    public void post() {
+    public String post(String body) {
+        final Rating rating = jsonToRating(body);
 
+        ratingRepository.save(rating);
+
+        return ratingToJson(rating).toString();
     }
 
     private JsonArray ratingsToJson(final List<Rating> ratings) {
@@ -52,5 +61,17 @@ public class RatingResource {
                 .add("value", rating.getValue())
                 .add("created_at", rating.getCreatedAt().toString())
                 .build();
+    }
+
+    private Rating jsonToRating(final String json) {
+        final JsonObject jsonObject = Json.createReader(new StringReader(json)).readObject();
+        final Rating rating = new Rating();
+        final Long userId = Long.valueOf(jsonObject.getInt("user_id"));
+
+        rating.setUser(userRepository.get(userId));
+        rating.setValue(jsonObject.getInt("value"));
+        rating.setEventId(Long.valueOf(jsonObject.getInt("event_id")));
+
+        return rating;
     }
 }

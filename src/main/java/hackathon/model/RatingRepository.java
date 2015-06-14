@@ -3,6 +3,7 @@ package hackathon.model;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -16,6 +17,15 @@ public class RatingRepository {
     public List<Rating> getAll() {
         final TypedQuery<Rating> query = entityManager.createNamedQuery(Rating.FIND_ALL, Rating.class);
         return query.getResultList();
+    }
+
+    @Transactional
+    public void save(final Rating rating) {
+        if (rating.getId() == null) {
+            entityManager.persist(rating);
+        } else {
+            entityManager.merge(rating);
+        }
     }
 
 }
