@@ -43,7 +43,7 @@ public class UserResource {
     }
 
     @POST
-    public void addUser(String body) {
+    public String addUser(String body) {
         User user = jsonToUser(body);
 
         try {
@@ -55,6 +55,8 @@ public class UserResource {
         } catch (final NoResultException e) {
             userRepository.save(user);
         }
+
+        return userToJson(user).toString();
     }
 
     @GET
