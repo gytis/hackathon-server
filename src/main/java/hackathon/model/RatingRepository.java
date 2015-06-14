@@ -15,7 +15,7 @@ public class RatingRepository {
     private EntityManager entityManager;
 
     public Rating getByOwners(final long userId, final long eventId) {
-        final TypedQuery<Rating> query = entityManager.createNamedQuery(Rating.FIND_ALL, Rating.class)
+        final TypedQuery<Rating> query = entityManager.createNamedQuery(Rating.FIND_BY_OWNERS, Rating.class)
                 .setParameter("userId", userId)
                 .setParameter("eventId", eventId);
 
