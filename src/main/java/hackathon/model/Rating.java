@@ -19,7 +19,7 @@ import java.util.Date;
 @Entity
 @NamedQueries({
         @NamedQuery(name = Rating.FIND_ALL, query = "SELECT r FROM Rating r"),
-        @NamedQuery(name = Rating.FIND_BY_OWNERS, query = "SELECT r FROM Rating r WHERE r.eventId=:eventId AND r.user.getId()=:userId")
+        @NamedQuery(name = Rating.FIND_BY_OWNERS, query = "SELECT r FROM Rating r WHERE r.eventId=:eventId AND r.user.id=:userId")
 })
 public class Rating {
 
