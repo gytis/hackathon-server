@@ -3,6 +3,7 @@ package hackathon.model;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -17,9 +18,20 @@ public class UserRepository {
         return entityManager.find(User.class, id);
     }
 
+    public User getByFacebookId(final String facebookId) {
+        final TypedQuery<User> query = entityManager.createNamedQuery(User.FIND_BY_FB_ID, User.class).setParameter("facebookId", facebookId);
+
+        return query.getSingleResult();
+    }
+
     public List<User> getAll() {
         final TypedQuery<User> query = entityManager.createNamedQuery(User.FIND_ALL, User.class);
         return query.getResultList();
+    }
+
+    @Transactional
+    public void save(final User user) {
+        entityManager.persist(user);
     }
 
 }

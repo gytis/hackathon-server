@@ -3,6 +3,8 @@ package hackathon.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -17,13 +19,17 @@ import java.util.List;
  */
 @Entity
 @NamedQueries({
-        @NamedQuery(name = User.FIND_ALL, query = "SELECT u FROM User u")
+        @NamedQuery(name = User.FIND_ALL, query = "SELECT u FROM User u"),
+        @NamedQuery(name = User.FIND_BY_FB_ID, query = "SELECT u FROM User u WHERE u.facebookId = :facebookId")
 })
 public class User implements Serializable {
 
     public static final String FIND_ALL = "User.findAll";
 
+    public static final String FIND_BY_FB_ID = "User.findByFbId";
+
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String name;

@@ -13,6 +13,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+import java.io.StringReader;
 import java.util.List;
 
 /**
@@ -31,9 +32,20 @@ public class UserResource {
         return usersToJson(users).toString();
     }
 
-    @POST
-    public void post() {
+    @GET
+    @Path("/fb/{facebookId}")
+    public String getUserByFacebookId(@PathParam("facebookId") String facebookId) {
+        final User user = userRepository.getByFacebookId(facebookId);
 
+        return userToJson(user).toString();
+    }
+
+    @POST
+    public void addUser(String body) {
+        // TODO Check for the same fb id
+        final User user = jsonToUser(body);
+
+        userRepository.save(user);
     }
 
     @GET
@@ -48,6 +60,12 @@ public class UserResource {
         final List<User> friends = user.getFriends();
 
         return Response.status(200).entity(usersToJson(friends).toString()).build();
+    }
+
+    @POST
+    @Path("/{userId}/friends")
+    public void addFriend() {
+
     }
 
     private JsonArray usersToJson(final List<User> users) {
@@ -68,5 +86,17 @@ public class UserResource {
                 .add("photo", user.getPhoto())
                 .add("registered", user.getRegistered())
                 .build();
+    }
+
+    private User jsonToUser(final String json) {
+        JsonObject jsonObject = Json.createReader(new StringReader(json)).readObject();
+
+        final User user = new User();
+        user.setName(jsonObject.getString("name"));
+        user.setFacebookId(jsonObject.getString("facebook_id"));
+        user.setPhoto(jsonObject.getString("photo"));
+        user.setRegistered(jsonObject.getBoolean("registered"));
+
+        return user;
     }
 }
