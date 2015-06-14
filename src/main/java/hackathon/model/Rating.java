@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -16,10 +17,15 @@ import java.util.Date;
  * @author <a href="mailto:gytis@redhat.com">Gytis Trikleris</a>
  */
 @Entity
-@NamedQuery(name = Rating.FIND_ALL, query = "SELECT r FROM Rating r")
+@NamedQueries({
+        @NamedQuery(name = Rating.FIND_ALL, query = "SELECT r FROM Rating r"),
+        @NamedQuery(name = Rating.FIND_BY_OWNERS, query = "SELECT r FROM Rating r WHERE r.event_id=:eventId AND r.user_id=:userId")
+})
 public class Rating {
 
     public static final String FIND_ALL = "Rating.findAll";
+
+    public static final String FIND_BY_OWNERS = "Rating.findByOwners";
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)

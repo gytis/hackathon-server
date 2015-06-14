@@ -14,6 +14,14 @@ public class RatingRepository {
     @Inject
     private EntityManager entityManager;
 
+    public Rating getByOwners(final long userId, final long eventId) {
+        final TypedQuery<Rating> query = entityManager.createNamedQuery(Rating.FIND_ALL, Rating.class)
+                .setParameter("userId", userId)
+                .setParameter("eventId", eventId);
+
+        return query.getSingleResult();
+    }
+
     public List<Rating> getAll() {
         final TypedQuery<Rating> query = entityManager.createNamedQuery(Rating.FIND_ALL, Rating.class);
         return query.getResultList();

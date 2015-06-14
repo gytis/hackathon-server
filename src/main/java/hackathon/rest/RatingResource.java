@@ -9,6 +9,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -36,9 +37,13 @@ public class RatingResource {
 
     @POST
     public String post(String body) {
-        final Rating rating = jsonToRating(body);
+        Rating rating = jsonToRating(body);
 
-        ratingRepository.save(rating);
+        try {
+            rating = ratingRepository.getByOwners(rating.getUser().getId(), rating.getEventId());
+        } catch (NoResultException e) {
+            ratingRepository.save(rating);
+        }
 
         return ratingToJson(rating).toString();
     }
