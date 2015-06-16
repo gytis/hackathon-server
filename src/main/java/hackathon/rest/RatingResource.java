@@ -9,6 +9,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -66,13 +67,19 @@ public class RatingResource {
     }
 
     private JsonObject ratingToJson(final Rating rating) {
-        return Json.createObjectBuilder()
+        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
                 .add("id", rating.getId())
-                .add("user_id", rating.getUser().getId())
                 .add("event_id", rating.getEventId())
                 .add("value", rating.getValue())
-                .add("created_at", rating.getCreatedAt().toString())
-                .build();
+                .add("created_at", rating.getCreatedAt().toString());
+
+        if (rating.getUser() == null) {
+            jsonObjectBuilder.add("user_id", "");
+        } else {
+            jsonObjectBuilder.add("user_id", rating.getUser().getId());
+        }
+
+        return jsonObjectBuilder.build();
     }
 
     private Rating jsonToRating(final String json) {
